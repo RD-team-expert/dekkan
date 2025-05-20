@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class sales extends Model
+class Sales extends Model
 {
     protected $fillable = [
         'user_id', 'date_time', 'product_id', 'quantity', 'total_products', 'total_price'
