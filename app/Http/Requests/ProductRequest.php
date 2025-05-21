@@ -14,6 +14,7 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'barcode' => 'nullable|string|max:255|unique:products,barcode,' . $this->product?->id, // Allow unique barcodes
             'user_id' => 'integer',
             'name' => 'string|max:255',
             'category' => 'string|max:255',

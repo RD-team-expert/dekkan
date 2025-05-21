@@ -28,12 +28,12 @@ class ProductController extends Controller
         $request->validated();
         // Handle image upload
         $imageUrl = null;
-        if ($request->hasFile('image_url')) {
+        if ($request->hasFile('image')) {
             $imageUrl = $request->file('image')->store('products', 'public');
         }
 
         // Create the product
-        Product::create([
+         $p=Product::create([
             'user_id' => Auth::user()->id,
             'name' => $request->name,
             'category' => $request->category,

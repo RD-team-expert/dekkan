@@ -100,6 +100,42 @@
             const barcodeInput = document.getElementById('barcode');
             let html5QrcodeScanner;
 
+            // Function to fetch product by barcode
+            function fetchProductByBarcode(barcode) {
+                if (!barcode) return; // Prevent fetching if barcode is empty
+                fetch(`{{ url('products/by-barcode') }}/${barcode}`, {
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Auto-fill form with product details
+                            document.getElementById('name').value = data.product.name;
+                            document.getElementById('category').value = data.product.category || '';
+                            document.getElementById('stock_quantity').value = data.product.stock_quantity;
+                            document.getElementById('quantity_alert').value = data.product.quantity_alert || '';
+                            document.getElementById('min_order').value = data.product.min_order || '';
+                            alert('تم العثور على المنتج! يمكنك تعديل التفاصيل إذا لزم الأمر.');
+                        } else {
+                            // Clear form fields if no product is found
+                            document.getElementById('name').value = '';
+                            document.getElementById('category').value = '';
+                            document.getElementById('stock_quantity').value = 0;
+                            document.getElementById('quantity_alert').value = '';
+                            document.getElementById('min_order').value = '';
+                            alert('لم يتم العثور على المنتج. يمكنك إضافة منتج جديد باستخدام هذا الباركود.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching product:', error);
+                        alert('حدث خطأ أثناء البحث عن المنتج.');
+                    });
+            }
+
+            // Barcode scan button event
             scanButton.addEventListener('click', () => {
                 scannerContainer.classList.toggle('hidden');
                 if (!scannerContainer.classList.contains('hidden')) {
@@ -109,14 +145,14 @@
                         { facingMode: "environment" }, // Use rear camera if available
                         {
                             fps: 10,
-                            qrbox: { width: 250, height: 100 }, // Adjust for barcode shape (narrower height)
+                            qrbox: { width: 250, height: 100 }, // Adjust for barcode shape
                             formatsToSupport: [
                                 Html5QrcodeSupportedFormats.CODE_128,
                                 Html5QrcodeSupportedFormats.EAN_13,
                                 Html5QrcodeSupportedFormats.EAN_8,
                                 Html5QrcodeSupportedFormats.UPC_A,
                                 Html5QrcodeSupportedFormats.UPC_E
-                            ] // Specify barcode formats
+                            ]
                         },
                         (decodedText, decodedResult) => {
                             // On successful scan
@@ -140,32 +176,20 @@
                 }
             });
 
-            function fetchProductByBarcode(barcode) {
-                fetch(`{{ url('products/by-barcode') }}/${barcode}`, {
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Auto-fill form with product details
-                            document.getElementById('name').value = data.product.name;
-                            document.getElementById('category').value = data.product.category || '';
-                            document.getElementById('stock_quantity').value = data.product.stock_quantity;
-                            document.getElementById('quantity_alert').value = data.product.quantity_alert || '';
-                            document.getElementById('min_order').value = data.product.min_order || '';
-                            alert('تم العثور على المنتج! يمكنك تعديل التفاصيل إذا لزم الأمر.');
-                        } else {
-                            alert('لم يتم العثور على المنتج. يمكنك إضافة منتج جديد باستخدام هذا الباركود.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching product:', error);
-                        alert('حدث خطأ أثناء البحث عن المنتج.');
-                    });
-            }
+            // Barcode input change event
+            barcodeInput.addEventListener('input', () => {
+                const barcode = barcodeInput.value.trim();
+                if (barcode.length > 0) {
+                    fetchProductByBarcode(barcode);
+                } else {
+                    // Clear form fields if barcode input is empty
+                    document.getElementById('name').value = '';
+                    document.getElementById('category').value = '';
+                    document.getElementById('stock_quantity').value = 0;
+                    document.getElementById('quantity_alert').value = '';
+                    document.getElementById('min_order').value = '';
+                }
+            });
         });
     </script>
 @endpush

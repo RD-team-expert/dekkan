@@ -25,7 +25,7 @@ class SaleController extends Controller
             $query->latest('created_at')->select('product_id', 'selling_price');
         }])->get();
 
-        return view('Sales.create', compact('products'));
+        return view('sales.create', compact('products'));
     }
 
     public function store(SaleRequest $request): \Illuminate\Http\RedirectResponse

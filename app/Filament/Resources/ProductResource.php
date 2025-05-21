@@ -33,20 +33,8 @@ class ProductResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
                     ->visibility('public')
-                    ->visible(fn ($record) => $record && $record->is_completed && in_array($record->section, ['open', 'close']))
-                    ->afterStateUpdated(function ($state, $record) {
-                        if ($state && $record) {
-                            if ($state instanceof \Illuminate\Http\UploadedFile) {
-                                // Generate a unique filename to avoid overwriting
-                                $fileName = time() . '_' . $state->getClientOriginalName();
-                                // Move the file to the public disk's task_images directory
-                                $path = $state->storeAs('task_images', $fileName, 'public');
-                                // Save the relative path to the database
-                                $record->images()->create(['image_path' => $path]);
-                                session()->flash('success', 'Image uploaded successfully! Please move to the next task.');
-                            }
-                        }
-                    }),
+                    ->image(),
+
                 Forms\Components\TextInput::make('quantity_alert')
                     ->required()
                     ->numeric(),
@@ -71,7 +59,7 @@ class ProductResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image_url'),
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('quantity_alert')
                     ->numeric()
                     ->sortable(),
