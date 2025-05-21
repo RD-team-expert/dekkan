@@ -22,6 +22,6 @@ class Sale extends Model
 
     public function product()
     {
-        return $this->belongsTo(product::class); // Changed 'products' to 'Product' for consistency
+        return $this->belongsTo(Product::class); // Changed 'products' to 'Product' for consistency
     }
 }

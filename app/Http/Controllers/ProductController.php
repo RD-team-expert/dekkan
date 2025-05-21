@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use App\Models\Products;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,7 +28,7 @@ class ProductController extends Controller
         $request->validated();
         // Handle image upload
         $imageUrl = null;
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image_url')) {
             $imageUrl = $request->file('image')->store('products', 'public');
         }
 
@@ -62,7 +62,7 @@ class ProductController extends Controller
         // Validate the request data
         $request->validated();
         // Handle image upload
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image_url')) {
             // Delete old image if exists
             if ($product->image_url) {
                 Storage::disk('public')->delete($product->image_url);

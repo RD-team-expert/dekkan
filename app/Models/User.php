@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function purchases()
     {
-        return $this->hasMany(purchase::class);
+        return $this->hasMany(Purchase::class);
     }
 
     public function sales()
@@ -58,7 +58,7 @@ class User extends Authenticatable
 
     public function paymentReceipts()
     {
-        return $this->hasMany(paymentReceipt::class);
+        return $this->hasMany(PaymentReceipt::class);
     }
 
 }

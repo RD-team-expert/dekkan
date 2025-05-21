@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -32,8 +31,22 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('category')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('image_url')
-                    ->image(),
+                Forms\Components\FileUpload::make('image')
+                    ->visibility('public')
+                    ->visible(fn ($record) => $record && $record->is_completed && in_array($record->section, ['open', 'close']))
+                    ->afterStateUpdated(function ($state, $record) {
+                        if ($state && $record) {
+                            if ($state instanceof \Illuminate\Http\UploadedFile) {
+                                // Generate a unique filename to avoid overwriting
+                                $fileName = time() . '_' . $state->getClientOriginalName();
+                                // Move the file to the public disk's task_images directory
+                                $path = $state->storeAs('task_images', $fileName, 'public');
+                                // Save the relative path to the database
+                                $record->images()->create(['image_path' => $path]);
+                                session()->flash('success', 'Image uploaded successfully! Please move to the next task.');
+                            }
+                        }
+                    }),
                 Forms\Components\TextInput::make('quantity_alert')
                     ->required()
                     ->numeric(),

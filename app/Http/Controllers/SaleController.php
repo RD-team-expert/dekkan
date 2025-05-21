@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaleRequest;
 use App\Models\Product;
-use App\Models\Products;
+
 use App\Models\Sale;
-use App\Models\Sales;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 

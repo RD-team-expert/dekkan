@@ -18,17 +18,17 @@ class Product extends Model
 
     public function purchases()
     {
-        return $this->hasMany(purchase::class);
+        return $this->hasMany(Purchase::class);
     }
 
     public function sales()
     {
-        return $this->hasMany(sale::class);
+        return $this->hasMany(Sale::class);
     }
 
     public function latestPurchase()
     {
-        return $this->hasOne(purchase::class, 'product_id')->latest('created_at')->select('product_id', 'selling_price');
+        return $this->hasOne(Purchase::class, 'product_id')->latest('created_at')->select('product_id', 'selling_price');
     }
 
 }

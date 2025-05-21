@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentReceiptRequest;
-use App\Models\Payment_receipts;
 use App\Models\PaymentReceipt;
 
 class PaymentReceiptController extends Controller
