@@ -34,6 +34,7 @@ class ProductController extends Controller
 
         // Create the product
          $p=Product::create([
+             'barcode' => $request->barcode, // Add barcode
             'user_id' => Auth::user()->id,
             'name' => $request->name,
             'category' => $request->category,

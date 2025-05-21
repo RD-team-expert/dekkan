@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'متجر الميني') - Mini Market</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('build/assets/app-ILPXYlGO.css') }}" rel="stylesheet">
+    <link href="{{ asset('build/assets/app-DH7cDScs.css') }}" rel="stylesheet">
     <script src="{{ asset('build/assets/app-T1DpEqax.js') }}" defer></script>
 </head>
 <body class="bg-gray-100 font-arabic">
@@ -92,11 +92,7 @@
 </nav>
 
 <!-- Floating Action Button -->
-<a href="@yield('add-route', route('products.create'))" class="fixed bottom-16 right-4 bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-blue-600">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-    </svg>
-</a>
+
 
 @push('scripts')
     <script>

@@ -13,7 +13,8 @@
             <label for="barcode" class="block text-sm font-medium text-gray-700">الباركود</label>
             <div class="flex space-x-2">
                 <input type="text" name="barcode" id="barcode" value="{{ old('barcode') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('barcode') border-red-500 @enderror" placeholder="امسح الباركود أو أدخله يدويًا">
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('barcode') border-red-500 @enderror"
+                       placeholder="امسح الباركود أو أدخله يدويًا">
                 <button type="button" id="scan-barcode" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                     مسح الباركود
                 </button>
@@ -119,6 +120,8 @@
                             document.getElementById('quantity_alert').value = data.product.quantity_alert || '';
                             document.getElementById('min_order').value = data.product.min_order || '';
                             alert('تم العثور على المنتج! يمكنك تعديل التفاصيل إذا لزم الأمر.');
+                            // Redirect to edit page for existing product
+                            window.location.href = `{{ url('products') }}/${data.product.id}/edit`;
                         } else {
                             // Clear form fields if no product is found
                             document.getElementById('name').value = '';

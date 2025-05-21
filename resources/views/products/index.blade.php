@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @forelse ($products as $product)
             <div class="flex flex-col sm:flex-row items-center bg-white p-3 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                <img src="{{ $product->image_url ? asset('storage/' . $product->image_url) : asset('images/placeholder.png') }}" 
+                <img src="{{ $product->image_url ? asset('storage/' . $product->image_url) : asset('images/placeholder.png') }}"
                      alt="{{ $product->name }}"
                      class="w-24 h-24 sm:w-20 sm:h-20 object-cover rounded-lg mb-2 sm:mb-0 sm:mr-3">
                 <div class="flex-1 text-center sm:text-right">
@@ -21,14 +21,14 @@
                 <div class="flex items-center gap-3 mt-2 sm:mt-0">
                     <span class="text-red-500 font-bold">0</span>
                     <div class="flex gap-2">
-                        <a href="{{ route('products.show', $product) }}" 
+                        <a href="{{ route('products.show', $product) }}"
                            class="text-blue-600 hover:text-blue-800 p-1.5 rounded-full hover:bg-blue-50">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
                         </a>
-                        <a href="{{ route('products.edit', $product) }}" 
+                        <a href="{{ route('products.edit', $product) }}"
                            class="text-green-600 hover:text-green-800 p-1.5 rounded-full hover:bg-green-50">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -37,7 +37,7 @@
                         <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" 
+                            <button type="submit"
                                     class="text-red-600 hover:text-red-800 p-1.5 rounded-full hover:bg-red-50"
                                     onclick="return confirm('هل أنت متأكد؟')">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,16 +60,10 @@
 
     <!-- Floating Action Buttons -->
     <div class="fixed bottom-20 right-4 flex flex-col gap-4">
-        <a href="{{ route('products.create') }}" 
+        <a href="{{ route('products.create') }}"
            class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-blue-600 shadow-lg transform hover:scale-105 transition-all">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-        </a>
-        <a href="{{ route('products.alerts') }}" 
-           class="bg-yellow-500 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-yellow-600 shadow-lg transform hover:scale-105 transition-all">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
         </a>
     </div>
