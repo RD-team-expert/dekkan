@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Products;
 use App\Models\Purchase;
 
+use App\Models\Purchases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +82,8 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase): \Illuminate\Contracts\View\View
     {
-        return view('purchases.edit', compact('purchase'));
+        $Products = Product::all();
+        return view('purchases.edit', compact('purchase', 'Products'));
     }
 
     public function update(Request $request, $id)

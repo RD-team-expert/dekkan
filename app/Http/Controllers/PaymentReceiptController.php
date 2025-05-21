@@ -10,8 +10,8 @@ class PaymentReceiptController extends Controller
 {
     public function index(): \Illuminate\Contracts\View\View
     {
-        $payment_receipts = PaymentReceipt::latest()->paginate(10);
-        return view('payment_receipts.index', compact('payment_receipts'));
+        $paymentReceipts = PaymentReceipt::latest()->paginate(10);
+        return view('payment_receipts.index', compact('paymentReceipts'));
     }
 
     public function create(): \Illuminate\Contracts\View\View
@@ -21,7 +21,11 @@ class PaymentReceiptController extends Controller
 
     public function store(PaymentReceiptRequest $request): \Illuminate\Http\RedirectResponse
     {
-        PaymentReceipt::create($request->validated());
+        $data = $request->validated();
+        $data['user_id'] = auth()->id(); // or $request->user()->id
+
+        PaymentReceipt::create($data);
+
         return redirect()->route('payment_receipts.index')->with('success', 'Created successfully');
     }
 
@@ -36,10 +40,9 @@ class PaymentReceiptController extends Controller
         return view('payment_receipts.edit', compact('paymentReceipt'));
     }
 
-    public function update(PaymentReceiptRequest $request, PaymentReceipt $id): \Illuminate\Http\RedirectResponse
+    public function update(PaymentReceiptRequest $request, PaymentReceipt $paymentReceipt): \Illuminate\Http\RedirectResponse
     {
 
-        $paymentReceipt = PaymentReceipt::findOrFail($id);
         $request->validate([
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0',

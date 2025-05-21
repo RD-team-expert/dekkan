@@ -88,21 +88,19 @@ class SaleController extends Controller
     {
         $sale->load(['product', 'user']);
 
-        return view('Sales.show', compact('sale'));
+        return view('sales.show', compact('sale'));
     }
 
     public function edit(Sale $sale): \Illuminate\Contracts\View\View
     {
-        $sale = Sale::findOrFail($sale);
         $products = Product::with(['latestPurchase' => function ($query) {
             $query->latest('created_at')->select('product_id', 'selling_price');
         }])->get();
-        return view('Sales.edit', compact('sale', 'products'));
+        return view('sales.edit', compact('sale', 'products'));
     }
 
-    public function update(SaleRequest $request, Sale $id): \Illuminate\Http\RedirectResponse
+    public function update(SaleRequest $request, Sale $sale): \Illuminate\Http\RedirectResponse
     {
-        $sale = Sale::findOrFail($id);
         $request->validate([
             'date_time' => 'required|date',
             'product_id' => 'required|integer|exists:products,id',

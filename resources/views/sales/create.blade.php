@@ -9,7 +9,7 @@
         @csrf
         <div class="mb-4">
             <label for="date_time" class="block text-sm font-medium text-gray-700">تاريخ ووقت المبيعة</label>
-            <input type="datetime-local" name="date_time" id="date_time" value="{{ old('date_time', now()->format('Y-m-d\TH:i')) }}"
+            <input type="datetime-local" name="date_time" id="date_time" value="{{ old('date_time', now()->timezone('Asia/Damascus')->format('Y-m-d\TH:i')) }}"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
         </div>
 

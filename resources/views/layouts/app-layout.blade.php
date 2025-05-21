@@ -89,6 +89,10 @@
         </svg>
         <span class="block text-xs">سجل المبيع</span>
     </a>
+    <a href="{{ route('payment_receipts.index') }}" class="text-gray-600 hover:text-gray-800 flex flex-col items-center" dir="rtl">
+        @svg('heroicon-o-currency-dollar', 'w-6 h-6')
+        <span class="block text-xs">المقبوضات و المدفوعات</span>
+    </a>
 </nav>
 
 <!-- Floating Action Button -->

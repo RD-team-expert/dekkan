@@ -26,7 +26,7 @@
                     <select name="product_id" id="product_id"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('product_id') border-red-500 @enderror" required>
                         <option value="">اختر منتج</option>
-                        @foreach ($products as $product)
+                        @foreach ($Products as $product)
                             <option value="{{ $product->id }}"
                                 {{ $purchase->product_id == $product->id ? 'selected' : '' }}>
                                 {{ $product->name }} (المخزن: {{ $product->stock_quantity }})
