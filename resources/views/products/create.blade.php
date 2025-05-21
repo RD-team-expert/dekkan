@@ -39,7 +39,7 @@
         <div class="mb-4">
             <label for="category" class="block text-sm font-medium text-gray-700">الفئة</label>
             <input type="text" name="category" id="category" value="{{ old('category') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('category') border-red-500 @enderror">
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('category') border-red-500 @enderror" required>
             @error('category')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -48,7 +48,7 @@
         <div class="mb-4">
             <label for="stock_quantity" class="block text-sm font-medium text-gray-700">كمية المخزون</label>
             <input type="number" name="stock_quantity" id="stock_quantity" min="0" value="{{ old('stock_quantity', 0) }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('stock_quantity') border-red-500 @enderror">
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('stock_quantity') border-red-500 @enderror" required>
             @error('stock_quantity')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -57,7 +57,7 @@
         <div class="mb-4">
             <label for="quantity_alert" class="block text-sm font-medium text-gray-700">تنبيه الكمية</label>
             <input type="number" name="quantity_alert" id="quantity_alert" min="0" value="{{ old('quantity_alert') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('quantity_alert') border-red-500 @enderror">
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('quantity_alert') border-red-500 @enderror" required>
             @error('quantity_alert')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -66,7 +66,7 @@
         <div class="mb-4">
             <label for="min_order" class="block text-sm font-medium text-gray-700">الحد الأدنى للطلب</label>
             <input type="number" name="min_order" id="min_order" min="0" value="{{ old('min_order') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('min_order') border-red-500 @enderror">
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('min_order') border-red-500 @enderror" required>
             @error('min_order')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror

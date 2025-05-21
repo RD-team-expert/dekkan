@@ -29,9 +29,9 @@ Route::middleware('auth')->group(function () {
         return view('scan');
     });
 
-    Route::post('/scan-product', [ProductsController::class, 'scanProduct']);
+    Route::post('/scan-product', [ProductController::class, 'scanProduct']);
 
-    Route::get('/products/by-barcode/{barcode}', [ProductsController::class, 'getByBarcode'])->name('products.byBarcode');
+    Route::get('/products/by-barcode/{barcode}', [ProductController::class, 'getByBarcode'])->name('products.byBarcode');
 
 });
 
