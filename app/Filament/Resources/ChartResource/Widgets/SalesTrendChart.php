@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\ChartResource\Widgets;
 
+use App\Models\Sale;
 use Filament\Widgets\ChartWidget;
-use App\Models\Sales;
-use Illuminate\Support\Carbon;
 
 class SalesTrendChart extends ChartWidget
 {
@@ -19,7 +18,7 @@ class SalesTrendChart extends ChartWidget
     protected function getData(): array
     {
         // Fetch daily sales totals for the past 30 days
-        $sales = sales::selectRaw('DATE(date_time) as date, SUM(total_price) as total')
+        $sales = Sale::selectRaw('DATE(date_time) as date, SUM(total_price) as total')
             ->whereBetween('date_time', [now()->subDays(30), now()])
             ->groupBy('date')
             ->orderBy('date')
@@ -52,3 +51,4 @@ class SalesTrendChart extends ChartWidget
         ];
     }
 }
+

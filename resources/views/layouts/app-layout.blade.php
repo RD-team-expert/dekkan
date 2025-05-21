@@ -6,8 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'متجر الميني') - Mini Market</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('build/assets/app-SvQ0Tvbl.css') }}" rel="stylesheet">
+    <link href="{{ asset('build/assets/app-ILPXYlGO.css') }}" rel="stylesheet">
     <script src="{{ asset('build/assets/app-T1DpEqax.js') }}" defer></script>
 </head>
 <body class="bg-gray-100 font-arabic">

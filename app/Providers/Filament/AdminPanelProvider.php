@@ -3,7 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\ChartResource\Widgets\SalesTrendChart;
-use App\Filament\Resources\YesResource\Widgets\StatsOverview;
+use App\Filament\Resources\OverviewResource\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
