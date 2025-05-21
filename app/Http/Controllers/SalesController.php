@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\salesRequest;
+use App\Http\Requests\SalesRequest;
 use App\Models\products;
-use App\Models\sales;
+use App\Models\Sales;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class salesController extends Controller
+class SalesController extends Controller
 {
     public function index(): \Illuminate\Contracts\View\View
     {
-        $sales = sales::latest()->paginate(10);
-        return view('sales.index', compact('sales'));
+        $Sales = Sales::latest()->paginate(10);
+        return view('Sales.index', compact('Sales'));
     }
 
     public function create()
@@ -24,7 +24,7 @@ class salesController extends Controller
             $query->latest('created_at')->select('product_id', 'selling_price');
         }])->get();
 
-        return view('sales.create', compact('products'));
+        return view('Sales.create', compact('products'));
     }
 
     public function store(Request $request): \Illuminate\Http\RedirectResponse
@@ -60,7 +60,7 @@ class salesController extends Controller
                 }
 
                 // Create a sale record
-                sales::create([
+                Sales::create([
                     'user_id' => $user->id,
                     'date_time' => $request->date_time,
                     'product_id' => $item['product_id'],
@@ -76,27 +76,27 @@ class salesController extends Controller
 
             DB::commit();
 
-            return redirect()->route('sales.create')->with('success', 'Sale recorded successfully');
+            return redirect()->route('Sales.create')->with('success', 'Sale recorded successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to record sale: ' . $e->getMessage()]);
         }
     }
 
-    public function show(sales $sale): \Illuminate\Contracts\View\View
+    public function show(Sales $sale): \Illuminate\Contracts\View\View
     {
         $sale->load(['product', 'user']);
 
-        return view('sales.show', compact('sale'));
+        return view('Sales.show', compact('sale'));
     }
 
     public function edit($id)
     {
-        $sale = sales::findOrFail($id);
+        $sale = Sales::findOrFail($id);
         $products = Products::with(['latestPurchase' => function ($query) {
             $query->latest('created_at')->select('product_id', 'selling_price');
         }])->get();
-        return view('sales.edit', compact('sale', 'products'));
+        return view('Sales.edit', compact('sale', 'products'));
     }
     public function update(Request $request, $id)
     {
@@ -134,11 +134,11 @@ class salesController extends Controller
             'total_price' => $request->total_price,
         ]);
 
-        return redirect()->route('sales.show', $sale->id)->with('success', 'Sale updated successfully');
+        return redirect()->route('Sales.show', $sale->id)->with('success', 'Sale updated successfully');
     }
-    public function destroy(sales $sales): \Illuminate\Http\RedirectResponse
+    public function destroy(Sales $Sales): \Illuminate\Http\RedirectResponse
     {
-        $sales->delete();
-        return redirect()->route('sales.index')->with('success', 'Deleted successfully');
+        $Sales->delete();
+        return redirect()->route('Sales.index')->with('success', 'Deleted successfully');
     }
 }

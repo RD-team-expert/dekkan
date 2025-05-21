@@ -33,7 +33,7 @@ class productsController extends Controller
         }
 
         // Create the product
-        products::create([
+        Products::create([
             'user_id' => Auth::user()->id,
             'name' => $request->name,
             'category' => $request->category,
@@ -58,7 +58,7 @@ class productsController extends Controller
     }
 
 
-    public function update(productsRequest $request, products $products): \Illuminate\Http\RedirectResponse
+    public function update(productsRequest $request, Products $products): \Illuminate\Http\RedirectResponse
     {
         // Validate the request data
         $request->validated();
@@ -82,7 +82,7 @@ class productsController extends Controller
         return redirect()->route('products.index')->with('success', 'Updated successfully');
     }
 
-    public function destroy(products $products): \Illuminate\Http\RedirectResponse
+    public function destroy(Products $products): \Illuminate\Http\RedirectResponse
     {
         // Delete image if exists
         if ($products->image_url) {
@@ -106,8 +106,7 @@ class productsController extends Controller
 
     public function getByBarcode($barcode)
     {
-        dd($barcode);
-        $product = Products::where('barcode', '0 850050596097')->first();
+        $product = Products::where('barcode', $barcode)->first();
         if ($product) {
             return response()->json([
                 'success' => true,

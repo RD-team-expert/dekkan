@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\purchasesRequest;
-use App\Models\products;
+use App\Models\Products;
 use App\Models\purchases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +21,9 @@ class purchasesController extends Controller
 
     public function create(): \Illuminate\Contracts\View\View
     {
-        $products = products::all();
+        $Products = Products::all();
 
-        return view('purchases.create', compact('products'));
+        return view('purchases.create', compact('Products'));
 
     }
 
@@ -43,8 +43,8 @@ class purchasesController extends Controller
             $user = Auth::user();
 
             // Process each product in the purchase
-            foreach ($request->products as $item) {
-                $product = products::findOrFail($item['product_id']);
+            foreach ($request->Products as $item) {
+                $product = Products::findOrFail($item['product_id']);
 
                 // Create a purchase record
                 purchases::create([
@@ -82,22 +82,22 @@ class purchasesController extends Controller
     public function edit($id)
     {
         $purchase = purchases::findOrFail($id);
-        $products = products::all();
-        return view('purchases.edit', compact('purchase', 'products'));
+        $Products = Products::all();
+        return view('purchases.edit', compact('purchase', 'Products'));
     }
     public function update(Request $request, $id)
     {
-        $purchase = purchases::findOrFail($id);
+        $purchase = Purchases::findOrFail($id);
         $request->validate([
             'date' => 'required|date',
-            'product_id' => 'required|integer|exists:products,id',
+            'product_id' => 'required|integer|exists:Products,id',
             'quantity' => 'required|integer|min:1',
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
         ]);
 
         // Adjust stock (revert old quantity, apply new quantity)
-        $product = products::findOrFail($request->product_id);
+        $product = Products::findOrFail($request->product_id);
         $oldQuantity = $purchase->quantity;
         $product->stock_quantity -= $oldQuantity; // Revert old purchase
         $product->stock_quantity += $request->quantity; // Apply new purchase
@@ -111,12 +111,12 @@ class purchasesController extends Controller
             'selling_price' => $request->selling_price,
         ]);
 
-        return redirect()->route('purchases.show', $purchase->id)->with('success', 'Purchase updated successfully');
+        return redirect()->route('Purchases.show', $purchase->id)->with('success', 'Purchase updated successfully');
     }
 
-    public function destroy(purchases $purchases): \Illuminate\Http\RedirectResponse
+    public function destroy(Purchases $Purchases): \Illuminate\Http\RedirectResponse
     {
-        $purchases->delete();
-        return redirect()->route('purchases.index')->with('success', 'Deleted successfully');
+        $Purchases->delete();
+        return redirect()->route('Purchases.index')->with('success', 'Deleted successfully');
     }
 }

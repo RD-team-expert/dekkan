@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentReceiptsResource\Pages;
 use App\Filament\Resources\PaymentReceiptsResource\RelationManagers;
-use App\Models\payment_receipts;
+use App\Models\Payment_receipts;
 use App\Models\PaymentReceipts;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PaymentReceiptsResource extends Resource
 {
-    protected static ?string $model = payment_receipts::class;
+    protected static ?string $model = Payment_receipts::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

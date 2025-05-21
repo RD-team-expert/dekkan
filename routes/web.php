@@ -15,13 +15,13 @@ Route::middleware('auth')->group(function () {
     Route::get('products/alerts', [productsController::class, 'alerts'])->name('products.alerts');
 
 
-    Route::resource('/sales', App\Http\Controllers\salesController::class);
+    Route::resource('/sales', App\Http\Controllers\SalesController::class);
 
-    Route::resource('/purchases', App\Http\Controllers\purchasesController::class);
+    Route::resource('/purchases', App\Http\Controllers\PurchasesController::class);
 
-    Route::resource('/products', App\Http\Controllers\productsController::class);
+    Route::resource('/products', App\Http\Controllers\ProductsController::class);
 
-    Route::resource('/payment_receipts', App\Http\Controllers\payment_receiptsController::class);
+    Route::resource('/payment_receipts', App\Http\Controllers\Payment_receiptsController::class);
 
     Route::resource('/users', App\Http\Controllers\UserController::class);
 
