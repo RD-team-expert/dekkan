@@ -28,6 +28,11 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('barcode')
+                    ->label('Barcode')
+                    ->maxLength(255)
+                    ->unique(table: Product::class, column: 'barcode', ignorable: fn ($record) => $record) // Ensure unique barcode
+                    ->required(),
                 Forms\Components\TextInput::make('category')
                     ->required()
                     ->maxLength(255),
@@ -56,6 +61,9 @@ class ProductResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('barcode')
+                    ->label('Barcode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')
                     ->searchable(),
