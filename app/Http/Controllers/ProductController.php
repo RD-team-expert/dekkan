@@ -37,7 +37,6 @@ class ProductController extends Controller
              'barcode' => $request->barcode, // Add barcode
             'user_id' => Auth::user()->id,
             'name' => $request->name,
-            'category' => $request->category,
             'image_url' => $imageUrl,
             'quantity_alert' => $request->quantity_alert,
             'min_order' => $request->min_order,
@@ -74,7 +73,6 @@ class ProductController extends Controller
         // Update the product
         $product->update([
             'name' => $request->name,
-            'category' => $request->category,
             'quantity_alert' => $request->quantity_alert,
             'min_order' => $request->min_order,
             'stock_quantity' => $request->stock_quantity,

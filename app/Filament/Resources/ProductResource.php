@@ -33,9 +33,6 @@ class ProductResource extends Resource
                     ->maxLength(255)
                     ->unique(table: Product::class, column: 'barcode', ignorable: fn ($record) => $record) // Ensure unique barcode
                     ->required(),
-                Forms\Components\TextInput::make('category')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
                     ->visibility('public')
                     ->image(),
@@ -64,8 +61,6 @@ class ProductResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('barcode')
                     ->label('Barcode')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('category')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('quantity_alert')

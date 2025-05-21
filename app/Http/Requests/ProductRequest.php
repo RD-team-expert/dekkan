@@ -17,7 +17,6 @@ class ProductRequest extends FormRequest
             'barcode' => 'nullable|string|max:255|unique:products,barcode,' . $this->product?->id, // Allow unique barcodes
             'user_id' => 'integer',
             'name' => 'string|max:255',
-            'category' => 'string|max:255',
             'image_url' => 'string|max:255',
             'quantity_alert' => 'integer',
             'min_order' => 'integer',

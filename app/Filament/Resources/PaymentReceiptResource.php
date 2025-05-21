@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentReceiptResource\Pages;
-use App\Filament\Resources\PaymentReceiptResource\RelationManagers;
 use App\Models\PaymentReceipt;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -28,8 +27,13 @@ class PaymentReceiptResource extends Resource
                     ->numeric(),
                 Forms\Components\DateTimePicker::make('date')
                     ->required(),
-                Forms\Components\TextInput::make('type')
-                    ->required(),
+                Forms\Components\Select::make('type')
+                    ->required()
+                    ->options([
+                        'payment' => 'Payment',
+                        'receipt' => 'Receipt',
+                    ])
+                    ->default('payment'),
                 Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric(),

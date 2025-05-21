@@ -38,15 +38,6 @@
         </div>
 
         <div class="mb-4">
-            <label for="category" class="block text-sm font-medium text-gray-700">الفئة</label>
-            <input type="text" name="category" id="category" value="{{ old('category') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('category') border-red-500 @enderror" required>
-            @error('category')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div class="mb-4">
             <label for="stock_quantity" class="block text-sm font-medium text-gray-700">كمية المخزون</label>
             <input type="number" name="stock_quantity" id="stock_quantity" min="0" value="{{ old('stock_quantity', 0) }}"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('stock_quantity') border-red-500 @enderror" required>

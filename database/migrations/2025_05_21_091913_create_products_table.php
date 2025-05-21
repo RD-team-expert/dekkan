@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('barcode')->nullable()->unique();
-            $table->string('category');
+            $table->string('category')->nullable();
             $table->string('image_url')->nullable();
             $table->integer('quantity_alert');
             $table->integer('min_order');
