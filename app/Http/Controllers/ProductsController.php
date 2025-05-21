@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class productsController extends Controller
+class ProductsController extends Controller
 {
     public function index(): \Illuminate\Contracts\View\View
     {

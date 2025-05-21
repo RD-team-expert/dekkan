@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class purchasesController extends Controller
+class PurchasesController extends Controller
 {
     public function index(): \Illuminate\Contracts\View\View
     {
