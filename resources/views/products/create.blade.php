@@ -110,7 +110,6 @@
                             document.getElementById('stock_quantity').value = data.product.stock_quantity;
                             document.getElementById('quantity_alert').value = data.product.quantity_alert || '';
                             document.getElementById('min_order').value = data.product.min_order || '';
-                            alert('تم العثور على المنتج! يمكنك تعديل التفاصيل إذا لزم الأمر.');
                             // Redirect to edit page for existing product
                             window.location.href = `{{ url('products') }}/${data.product.id}/edit`;
                         } else {
@@ -120,12 +119,10 @@
                             document.getElementById('stock_quantity').value = 0;
                             document.getElementById('quantity_alert').value = '';
                             document.getElementById('min_order').value = '';
-                            alert('لم يتم العثور على المنتج. يمكنك إضافة منتج جديد باستخدام هذا الباركود.');
                         }
                     })
                     .catch(error => {
                         console.error('Error fetching product:', error);
-                        alert('حدث خطأ أثناء البحث عن المنتج.');
                     });
             }
 
