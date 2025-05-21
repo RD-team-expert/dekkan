@@ -30,4 +30,14 @@
     <div class="mt-4">
         {{ $sales->links() }}
     </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-20 right-4 flex flex-col gap-4">
+        <a href="{{ route('sales.create') }}"
+           class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-blue-600 shadow-lg transform hover:scale-105 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+        </a>
+    </div>
 @endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseRequest;
 use App\Models\Product;
 
+use App\Models\Products;
 use App\Models\Purchase;
 
 use Illuminate\Http\Request;
@@ -22,7 +23,9 @@ class PurchaseController extends Controller
 
     public function create(): \Illuminate\Contracts\View\View
     {
-        return view('purchases.create');
+        $Products = Product::all();
+
+        return view('purchases.create', compact('Products'));
     }
 
     public function store(PurchaseRequest $request): \Illuminate\Http\RedirectResponse

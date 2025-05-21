@@ -21,7 +21,7 @@
                         <select name="products[0][product_id]" id="product_id_0"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             <option value="">اختر منتج</option>
-                            @foreach ($products as $product)
+                            @foreach ($Products as $product)
                                 <option value="{{ $product->id }}">{{ $product->name }} (المخزن: {{ $product->stock_quantity }})</option>
                             @endforeach
                         </select>
@@ -89,7 +89,7 @@
                                 <select name="products[${productIndex}][product_id]" id="product_id_${productIndex}"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                                     <option value="">اختر منتج</option>
-                                    @foreach ($products as $product)
+                                    @foreach ($Products as $product)
                     <option value="{{ $product->id }}">{{ $product->name }} (المخزن: {{ $product->stock_quantity }})</option>
                                     @endforeach
                     </select>
