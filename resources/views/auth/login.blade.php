@@ -1,5 +1,4 @@
-@extends('layouts.app-layout')
-
+@extends('layouts.login-layout')
 @section('title', 'تسجيل الدخول')
 @section('header', 'تسجيل الدخول')
 
