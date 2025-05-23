@@ -5,12 +5,16 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ProductResource extends Resource
 {
@@ -33,10 +37,12 @@ class ProductResource extends Resource
                     ->maxLength(255)
                     ->unique(table: Product::class, column: 'barcode', ignorable: fn ($record) => $record) // Ensure unique barcode
                     ->required(),
-                Forms\Components\FileUpload::make('image')
-                    ->visibility('public')
-                    ->image(),
-
+                Forms\Components\FileUpload::make('image_url')
+                    ->disk('public') // Specify the 'public' disk
+                    ->directory('products') // Store in the 'products' directory
+                    ->visibility('public') // Ensure public visibility
+                    ->image(), // Restrict to image files
+//                    ->storeFileNamesIn('image_url'),
                 Forms\Components\TextInput::make('quantity_alert')
                     ->required()
                     ->numeric(),
@@ -62,7 +68,8 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('barcode')
                     ->label('Barcode')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image_url') // Match the column name
+                ->label('Image'),
                 Tables\Columns\TextColumn::make('quantity_alert')
                     ->numeric()
                     ->sortable(),
