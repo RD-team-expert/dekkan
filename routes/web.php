@@ -15,7 +15,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('products/alerts', [productController::class, 'alerts'])->name('products.alerts');
 
-    Route::get('/sales/search-products', [SaleController::class, 'searchProducts'])->name('sales.search-products');
+        Route::get('/sales/search-products', [SaleController::class, 'searchProducts'])->name('sales.search-products');
 
 
     Route::resource('/sales', App\Http\Controllers\saleController::class);
@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
 
 // Route::resource('/payment_receipts', App\Http\Controllers\PaymentReceiptController::class);
 
-// Route::resource('/products', App\Http\Controllers\ProductController::class);
+Route::resource('/products', App\Http\Controllers\ProductController::class);
 
 // Route::resource('/purchases', App\Http\Controllers\PurchaseController::class);
 
