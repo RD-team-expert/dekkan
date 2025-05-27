@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PurchaseResource\Pages;
 use App\Filament\Resources\PurchaseResource\RelationManagers;
 use App\Models\Purchase;
+use App\Models\User;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,14 +25,18 @@ class PurchaseResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\Select::make('user_id')
+                    ->label('User')
+                    ->options(User::all()->pluck('name', 'id'))
                     ->required()
-                    ->numeric(),
+                    ->searchable(),
                 Forms\Components\DateTimePicker::make('date')
                     ->required(),
-                Forms\Components\TextInput::make('product_id')
+                Forms\Components\Select::make('product_id')
+                    ->label('Product')
+                    ->options(Product::all()->pluck('name', 'id'))
                     ->required()
-                    ->numeric(),
+                    ->searchable(),
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric(),
@@ -47,15 +53,17 @@ class PurchaseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('product_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Product')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),

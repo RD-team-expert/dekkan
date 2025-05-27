@@ -7,13 +7,16 @@
 @section('content')
     <form action="{{ route('payment_receipts.store') }}" method="POST" class="bg-white p-6 rounded shadow-md">
         @csrf
-        <div class="mb-4">
-            <label for="type" class="block text-sm font-medium text-gray-700">النوع</label>
-            <select name="type" id="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+        <div class="mb-4 form-group">
+            <label for="type" class="form-label">النوع</label>
+            <select name="type" id="type" class="form-select @error('type') error @enderror" required>
                 <option value="">اختر النوع</option>
                 <option value="payment" {{ old('type') == 'payment' ? 'selected' : '' }}>دفعة</option>
                 <option value="receipt" {{ old('type') == 'receipt' ? 'selected' : '' }}>إيصال</option>
             </select>
+            @error('type')
+            <p class="form-error">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="mb-4">

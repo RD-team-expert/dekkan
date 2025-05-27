@@ -42,7 +42,7 @@ class ProductController extends Controller
             'min_order' => $request->min_order,
             'stock_quantity' => $request->stock_quantity,
         ]);
-        return redirect()->route('products.index')->with('success', 'Created successfully');
+        return redirect()->route('products.index')->with('success', 'تم الإنشاء بنجاح');
     }
 
     public function show(Product $product): \Illuminate\Contracts\View\View
@@ -77,7 +77,7 @@ class ProductController extends Controller
             'min_order' => $request->min_order,
             'stock_quantity' => $request->stock_quantity,
         ]);
-        return redirect()->route('products.index')->with('success', 'Updated successfully');
+        return redirect()->route('products.index')->with('success', 'تم التحديث بنجاح');
     }
 
     public function destroy(Product $product): \Illuminate\Http\RedirectResponse
@@ -89,7 +89,7 @@ class ProductController extends Controller
 
         // Delete the product
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Deleted successfully');
+        return redirect()->route('products.index')->with('success', 'تم الحذف بنجاح');
     }
 
     public function alerts()
@@ -113,7 +113,7 @@ class ProductController extends Controller
         }
         return response()->json([
             'success' => false,
-            'message' => 'Product not found',
+            'message' => 'المنتج غير موجود',
         ]);
     }
 

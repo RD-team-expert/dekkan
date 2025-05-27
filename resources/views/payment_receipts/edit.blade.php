@@ -9,12 +9,12 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-4">
-            <label for="date" class="block text-sm font-medium text-gray-700">تاريخ الدفع</label>
+        <div class="mb-4 form-group">
+            <label for="date" class="form-label">تاريخ الدفع</label>
             <input type="date" name="date" id="date" value="{{ $paymentReceipt->date->format('Y-m-d') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('date') border-red-500 @enderror" required>
+                   class="form-input @error('date') error @enderror" required>
             @error('date')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="form-error">{{ $message }}</p>
             @enderror
         </div>
 

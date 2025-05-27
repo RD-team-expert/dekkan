@@ -9,17 +9,16 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">اسم المنتج</label>
+        <div class="mb-4 form-group">
+            <label for="name" class="form-label">اسم المنتج</label>
             <input type="text" name="name" id="name" value="{{ old('name', $product->name) }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                   class="form-input @error('name') error @enderror" required>
+            @error('name')
+            <p class="form-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div class="mb-4">
-            <label for="category" class="block text-sm font-medium text-gray-700">الفئة</label>
-            <input type="text" name="category" id="category" value="{{ old('category', $product->category) }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-        </div>
+        
 
         <div class="mb-4">
             <label for="image" class="block text-sm font-medium text-gray-700">صورة المنتج (اتركه فارغًا إذا لم ترغب في التغيير)</label>

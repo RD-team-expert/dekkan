@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SaleRequest;
-use App\Models\Product;
-
 use App\Models\Sale;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\SaleRequest;
+
+// Replace this line
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SaleController extends Controller
 {
@@ -52,12 +54,12 @@ class SaleController extends Controller
 
                 // Validate total_price matches the calculated value (optional strict check)
                 if (abs($item['total_price'] - $expectedTotal) > 0.01) {
-                    throw new \Exception('Total price mismatch for product ID: ' . $item['product_id']);
+                    throw new \Exception('عدم تطابق السعر الإجمالي للمنتج رقم: ' . $item['product_id']);
                 }
 
                 // Check stock availability
                 if ($product->stock_quantity < $item['quantity']) {
-                    throw new \Exception('Insufficient stock for product: ' . $product->name);
+                    throw new \Exception('المخزون غير كافٍ للمنتج: ' . $product->name);
                 }
 
                 // Create a sale record
@@ -77,10 +79,10 @@ class SaleController extends Controller
 
             DB::commit();
 
-            return redirect()->route('sales.create')->with('success', 'Sale recorded successfully');
+            return redirect()->route('sales.create')->with('success', 'تم تسجيل عملية البيع بنجاح');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to record sale: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'فشل في تسجيل عملية البيع: ' . $e->getMessage()]);
         }
     }
 
@@ -114,7 +116,7 @@ class SaleController extends Controller
         $expectedTotal = $request->quantity * $sellingPrice;
 
         if (abs($request->total_price - $expectedTotal) > 0.01) {
-            return back()->withErrors(['total_price' => 'Total price mismatch']);
+            return back()->withErrors(['total_price' => 'عدم تطابق السعر الإجمالي']);
         }
 
         // Adjust stock (revert old quantity, apply new quantity)
@@ -122,7 +124,7 @@ class SaleController extends Controller
         $product->stock_quantity += $oldQuantity; // Revert old sale
         $product->stock_quantity -= $request->quantity; // Apply new sale
         if ($product->stock_quantity < 0) {
-            return back()->withErrors(['quantity' => 'Insufficient stock']);
+            return back()->withErrors(['quantity' => 'المخزون غير كافٍ']);
         }
         $product->save();
 
@@ -134,12 +136,34 @@ class SaleController extends Controller
             'total_price' => $request->total_price,
         ]);
 
-        return redirect()->route('sales.show', $sale->id)->with('success', 'Sale updated successfully');
+        return redirect()->route('sales.show', $sale->id)->with('success', 'تم تحديث عملية البيع بنجاح');
     }
 
     public function destroy(Sale $sale): \Illuminate\Http\RedirectResponse
     {
         $sale->delete();
-        return redirect()->route('sales.index')->with('success', 'Deleted successfully');
+        return redirect()->route('sales.index')->with('success', 'تم الحذف بنجاح');
+    }
+
+    public function searchProducts(Request $request)
+    {
+        // Remove this line
+     $query = $request->get('query', '');
+        $products = Product::with(['latestPurchase' => function ($query) {
+            $query->latest('created_at')->select('product_id', 'selling_price');
+        }])
+        ->where('name', 'LIKE', '%' . $query . '%')
+        ->limit(20)
+        ->get();
+        
+        return response()->json($products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'barcode' => $product->barcode,
+                'stock_quantity' => $product->stock_quantity,
+                'selling_price' => $product->latestPurchase->selling_price ?? 0
+            ];
+        }));
     }
 }

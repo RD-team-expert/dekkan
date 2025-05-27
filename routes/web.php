@@ -1,8 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome')->name('home');
@@ -13,6 +14,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('products/alerts', [productController::class, 'alerts'])->name('products.alerts');
+
+    Route::get('/sales/search-products', [SaleController::class, 'searchProducts'])->name('sales.search-products');
 
 
     Route::resource('/sales', App\Http\Controllers\saleController::class);
@@ -35,10 +38,10 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::resource('/payment_receipts', App\Http\Controllers\PaymentReceiptController::class);
+// Route::resource('/payment_receipts', App\Http\Controllers\PaymentReceiptController::class);
 
-Route::resource('/products', App\Http\Controllers\ProductController::class);
+// Route::resource('/products', App\Http\Controllers\ProductController::class);
 
-Route::resource('/purchases', App\Http\Controllers\PurchaseController::class);
+// Route::resource('/purchases', App\Http\Controllers\PurchaseController::class);
 
-Route::resource('/sales', App\Http\Controllers\SaleController::class);
+// Route::resource('/sales', App\Http\Controllers\SaleController::class);

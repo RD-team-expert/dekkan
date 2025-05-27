@@ -9,7 +9,7 @@
         @csrf
         <div class="mb-4">
             <label for="date_time" class="block text-sm font-medium text-gray-700">تاريخ ووقت المبيعة</label>
-            <input type="datetime-local" name="date_time" id="date_time" value="{{ old('date_time', now()->timezone('Asia/Damascus')->format('Y-m-d\TH:i')) }}"
+            <input type="datetime-local" name="date_time" id="date_time" value="{{ old('date_time', now()->timezone('Asia/Damascus')->format('Y-m-d\\TH:i')) }}"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
         </div>
 
@@ -26,7 +26,13 @@
                         </div>
                     </div>
                     <div>
-                        <label for="product_id_0" class="block text-sm font-medium text-gray-700">المنتج</label>
+                        <label for="name_0" class="block text-sm font-medium text-gray-700">البحث عن المنتج</label>
+                        <div class="relative">
+                            <input type="text" id="name_0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm product-search"
+                                   placeholder="ابحث عن المنتج بالاسم " data-index="0">
+                            <div id="search-results_0" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-60 overflow-y-auto"></div>
+                        </div>
+                        <label for="product_id_0" class="block text-sm font-medium text-gray-700 mt-2">اختر المنتج</label>
                         <select name="products[0][product_id]" id="product_id_0"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm product-select" required>
                             <option value="">اختر منتج</option>
@@ -34,7 +40,8 @@
                                 <option value="{{ $product->id }}"
                                         data-selling-price="{{ $product->latestPurchase->selling_price ?? 0 }}"
                                         data-stock-quantity="{{ $product->stock_quantity }}"
-                                        data-barcode="{{ $product->barcode }}">
+                                        data-barcode="{{ $product->barcode }}"
+                                        data-name="{{ $product->name }}">
                                     {{ $product->name }} (المخزن: {{ $product->stock_quantity }})
                                 </option>
                             @endforeach
@@ -78,6 +85,7 @@
     </form>
 @endsection
 
+
 @push('scripts')
     <!-- Include html5-qrcode library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -112,7 +120,13 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="product_id_${productIndex}" class="block text-sm font-medium text-gray-700">المنتج</label>
+                                <label for="name_${productIndex}" class="block text-sm font-medium text-gray-700">البحث عن المنتج</label>
+                                <div class="relative">
+                                    <input type="text" id="name_${productIndex}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm product-search"
+                                           placeholder="ابحث عن المنتج بالاسم أو الباركود" data-index="${productIndex}">
+                                    <div id="search-results_${productIndex}" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-60 overflow-y-auto"></div>
+                                </div>
+                                <label for="product_id_${productIndex}" class="block text-sm font-medium text-gray-700 mt-2">اختر المنتج</label>
                                 <select name="products[${productIndex}][product_id]" id="product_id_${productIndex}"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm product-select" required>
                                     <option value="">اختر منتج</option>
@@ -120,7 +134,8 @@
                                         <option value="{{ $product->id }}"
                                                 data-selling-price="{{ $product->latestPurchase->selling_price ?? 0 }}"
                                                 data-stock-quantity="{{ $product->stock_quantity }}"
-                                                data-barcode="{{ $product->barcode }}">
+                                                data-barcode="{{ $product->barcode }}"
+                                                data-name="{{ $product->name }}">
                                             {{ $product->name }} (المخزن: {{ $product->stock_quantity }})
                                         </option>
                                     @endforeach
@@ -140,10 +155,10 @@
                         <button type="button" class="remove-product mt-2 text-red-600 hover:text-red-800">إزالة</button>
                     `;
                     productsContainer.appendChild(newItem);
-                    
+
                     // Initialize the new product row
                     initProductRow(productIndex);
-                    
+
                     // Show remove button for the first product if more than one product exists
                     const firstRemoveButton = productsContainer.querySelector('.product-item:first-child .remove-product');
                     if (firstRemoveButton) {
@@ -158,7 +173,7 @@
                     const productItem = e.target.closest('.product-item');
                     productItem.remove();
                     updateGrandTotal();
-                    
+
                     // Hide remove button for the first product if only one product exists
                     const productItems = productsContainer.querySelectorAll('.product-item');
                     if (productItems.length === 1) {
@@ -176,86 +191,124 @@
                 const quantityInput = document.getElementById(`quantity_${index}`);
                 const totalPriceInput = document.getElementById(`total_price_${index}`);
                 const barcodeInput = document.getElementById(`barcode_${index}`);
+                const searchInput = document.getElementById(`name_${index}`);
+                const searchResults = document.getElementById(`search-results_${index}`);
                 const scanButton = document.querySelector(`.scan-barcode[data-index="${index}"]`);
-                
+
+                // Product search functionality
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        const query = e.target.value.trim();
+
+                        if (query.length >= 2) {
+                            searchResults.innerHTML = '<div class="p-2 text-gray-500">جارٍ البحث...</div>';
+                            searchResults.classList.remove('hidden');
+                            searchProducts(query, index); // Immediate search
+                        } else {
+                            searchResults.classList.add('hidden');
+                        }
+                    });
+
+                    // Hide search results when clicking outside
+                    document.addEventListener('click', (e) => {
+                        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                            searchResults.classList.add('hidden');
+                        }
+                    });
+                }
+
                 // Barcode input handler
                 if (barcodeInput) {
                     barcodeInput.addEventListener('input', (e) => {
                         const barcode = e.target.value.trim();
                         if (barcode) {
-                            // Find product option with matching barcode
+                            // Try to match barcode with dropdown options first
                             const productOption = Array.from(productSelect.options).find(
                                 option => option.dataset.barcode === barcode
                             );
-                            
+
                             if (productOption) {
                                 productSelect.value = productOption.value;
-                                // Trigger change event to update price
+                                searchInput.value = productOption.dataset.name;
                                 const changeEvent = new Event('change');
                                 productSelect.dispatchEvent(changeEvent);
+                            } else {
+                                // Fallback to server-side search
+                                searchProducts(barcode, index);
                             }
                         }
                     });
                 }
-                
+
                 // Barcode scanner button handler
                 if (scanButton) {
                     scanButton.addEventListener('click', () => {
                         const scannerContainer = document.getElementById('scanner-container');
                         scannerContainer.classList.remove('hidden');
-                        
+
                         // Stop any existing scanner
                         html5QrcodeScanners.forEach(scanner => {
                             if (scanner.isScanning) {
                                 scanner.stop();
                             }
                         });
-                        
+                        html5QrcodeScanners = [];
+
                         // Create new scanner
                         const html5QrcodeScanner = new Html5Qrcode("reader");
                         html5QrcodeScanners.push(html5QrcodeScanner);
-                        
+
                         html5QrcodeScanner.start(
                             { facingMode: "environment" },
-                            { fps: 10, qrbox: 250 },
+                            { fps: 10, qrbox: { width: 250, height: 250 } },
                             (decodedText) => {
                                 // Stop scanning after successful scan
                                 html5QrcodeScanner.stop();
                                 scannerContainer.classList.add('hidden');
-                                
+
                                 // Set barcode value and trigger input event
                                 barcodeInput.value = decodedText;
                                 const inputEvent = new Event('input', { bubbles: true });
                                 barcodeInput.dispatchEvent(inputEvent);
                             },
                             (errorMessage) => {
-                                // Handle scan error (optional)
-                                console.error(errorMessage);
+                                console.error("Scan error:", errorMessage);
                             }
                         ).catch(err => {
                             console.error("Scanner start error:", err);
+                            alert("فشل بدء الماسح الضوئي. تأكد من السماح باستخدام الكاميرا.");
                         });
                     });
                 }
-                
+
                 // Product select change handler
                 if (productSelect) {
                     productSelect.addEventListener('change', () => {
                         const selectedOption = productSelect.options[productSelect.selectedIndex];
                         const sellingPrice = parseFloat(selectedOption.dataset.sellingPrice || 0);
                         const quantity = parseInt(quantityInput.value || 1);
-                        
+                        const stockQuantity = parseInt(selectedOption.dataset.stockQuantity || 0);
+
+                        // Validate quantity against stock
+                        if (quantity > stockQuantity) {
+                            alert(`الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${stockQuantity})`);
+                            quantityInput.value = stockQuantity || 1;
+                        }
+
                         // Update total price
-                        totalPriceInput.value = (sellingPrice * quantity).toFixed(2);
+                        totalPriceInput.value = (sellingPrice * parseInt(quantityInput.value)).toFixed(2);
                         updateGrandTotal();
-                        
-                        // Update barcode field if available
+
+                        // Update barcode and search input fields
                         if (barcodeInput && selectedOption.dataset.barcode) {
                             barcodeInput.value = selectedOption.dataset.barcode;
                         }
+                        if (searchInput && selectedOption.dataset.name) {
+                            searchInput.value = selectedOption.dataset.name;
+                        }
                     });
                 }
-                
+
                 // Quantity input change handler
                 if (quantityInput) {
                     quantityInput.addEventListener('input', () => {
@@ -263,24 +316,121 @@
                             const selectedOption = productSelect.options[productSelect.selectedIndex];
                             const sellingPrice = parseFloat(selectedOption.dataset.sellingPrice || 0);
                             const quantity = parseInt(quantityInput.value || 1);
-                            
+                            const stockQuantity = parseInt(selectedOption.dataset.stockQuantity || 0);
+
+                            // Validate quantity against stock
+                            if (quantity > stockQuantity) {
+                                alert(`الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${stockQuantity})`);
+                                quantityInput.value = stockQuantity || 1;
+                            }
+
                             // Update total price
-                            totalPriceInput.value = (sellingPrice * quantity).toFixed(2);
+                            totalPriceInput.value = (sellingPrice * parseInt(quantityInput.value)).toFixed(2);
                             updateGrandTotal();
                         }
                     });
                 }
             }
-            
+
+            // Search products function
+            function searchProducts(query, index) {
+                const searchResults = document.getElementById(`search-results_${index}`);
+
+                fetch(`{{ route('sales.search-products') }}?query=${encodeURIComponent(query)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(products => {
+                        searchResults.innerHTML = '';
+
+                        if (products.length > 0) {
+                            products.forEach(product => {
+                                const resultItem = document.createElement('div');
+                                resultItem.className = 'p-2 hover:bg-gray-100 cursor-pointer border-b';
+                                resultItem.innerHTML = `
+                                    <div class="font-medium">${product.name}</div>
+                                    <div class="text-sm text-gray-600">المخزن: ${product.stock_quantity} | السعر: ${product.selling_price}</div>
+                                    <div class="text-xs text-gray-500">الباركود: ${product.barcode || 'غير متوفر'}</div>
+                                `;
+                                resultItem.addEventListener('click', () => {
+                                    selectProduct(product, index);
+                                    searchResults.classList.add('hidden');
+                                });
+                                searchResults.appendChild(resultItem);
+                            });
+                            searchResults.classList.remove('hidden');
+                        } else {
+                            searchResults.innerHTML = '<div class="p-2 text-gray-500">لا توجد منتجات مطابقة</div>';
+                            searchResults.classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                        searchResults.innerHTML = '<div class="p-2 text-red-500">خطأ في البحث عن المنتجات</div>';
+                        searchResults.classList.remove('hidden');
+                    });
+            }
+
+            // Select product function
+            function selectProduct(product, index) {
+                const searchInput = document.getElementById(`name_${index}`);
+                const productSelect = document.getElementById(`product_id_${index}`);
+                const barcodeInput = document.getElementById(`barcode_${index}`);
+                const quantityInput = document.getElementById(`quantity_${index}`);
+                const totalPriceInput = document.getElementById(`total_price_${index}`);
+
+                // Update search input
+                searchInput.value = product.name;
+
+                // Check if product exists in dropdown; if not, add it
+                let productOption = Array.from(productSelect.options).find(
+                    option => option.value == product.id
+                );
+                if (!productOption) {
+                    productOption = new Option(
+                        `${product.name} (المخزن: ${product.stock_quantity})`,
+                        product.id,
+                        false,
+                        true
+                    );
+                    productOption.dataset.sellingPrice = product.selling_price;
+                    productOption.dataset.stockQuantity = product.stock_quantity;
+                    productOption.dataset.barcode = product.barcode || '';
+                    productOption.dataset.name = product.name;
+                    productSelect.add(productOption);
+                } else {
+                    productSelect.value = product.id;
+                }
+
+                // Update barcode
+                if (barcodeInput) {
+                    barcodeInput.value = product.barcode || '';
+                }
+
+                // Validate quantity against stock
+                const quantity = parseInt(quantityInput.value || 1);
+                if (quantity > product.stock_quantity) {
+                    alert(`الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${product.stock_quantity})`);
+                    quantityInput.value = product.stock_quantity || 1;
+                }
+
+                // Update total price
+                totalPriceInput.value = (product.selling_price * parseInt(quantityInput.value)).toFixed(2);
+                updateGrandTotal();
+            }
+
             // Update grand total
             function updateGrandTotal() {
                 const totalPriceInputs = document.querySelectorAll('[id^="total_price_"]');
                 let grandTotal = 0;
-                
+
                 totalPriceInputs.forEach(input => {
                     grandTotal += parseFloat(input.value || 0);
                 });
-                
+
                 if (grandTotalInput) {
                     grandTotalInput.value = grandTotal.toFixed(2);
                 }
@@ -288,4 +438,3 @@
         });
     </script>
 @endpush
-

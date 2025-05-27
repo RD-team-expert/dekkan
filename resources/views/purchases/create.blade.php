@@ -7,10 +7,13 @@
 @section('content')
     <form action="{{ route('purchases.store') }}" method="POST" class="bg-white p-6 rounded shadow-md">
         @csrf
-        <div class="mb-4">
-            <label for="date" class="block text-sm font-medium text-gray-700">تاريخ الشراء</label>
+        <div class="mb-4 form-group">
+            <label for="date" class="form-label">تاريخ الشراء</label>
             <input type="date" name="date" id="date" value="{{ old('date') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                   class="form-input @error('date') error @enderror" required>
+            @error('date')
+            <p class="form-error">{{ $message }}</p>
+            @enderror
         </div>
 
         <div id="products-container">

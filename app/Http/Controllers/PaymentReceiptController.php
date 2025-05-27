@@ -26,7 +26,7 @@ class PaymentReceiptController extends Controller
 
         PaymentReceipt::create($data);
 
-        return redirect()->route('payment_receipts.index')->with('success', 'Created successfully');
+        return redirect()->route('payment_receipts.index')->with('success', 'تم الإنشاء بنجاح');
     }
 
     public function show($id): \Illuminate\Contracts\View\View
@@ -55,12 +55,12 @@ class PaymentReceiptController extends Controller
             'note' => $request->note,
         ]);
 
-        return redirect()->route('payment_receipts.show', $paymentReceipt->id)->with('success', 'Payment receipt updated successfully');
+        return redirect()->route('payment_receipts.show', $paymentReceipt->id)->with('success', 'تم تحديث إيصال الدفع بنجاح');
     }
 
     public function destroy(PaymentReceipt $paymentReceipt): \Illuminate\Http\RedirectResponse
     {
         $paymentReceipt->delete();
-        return redirect()->route('payment_receipts.index')->with('success', 'Deleted successfully');
+        return redirect()->route('payment_receipts.index')->with('success', 'تم الحذف بنجاح');
     }
 }

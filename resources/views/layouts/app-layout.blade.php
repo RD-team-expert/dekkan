@@ -7,8 +7,12 @@
     <title>@yield('title', 'متجر الميني') - Mini Market</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <link href="{{ asset('build/assets/app-DH7cDScs.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/form-styles.css') }}" rel="stylesheet">
+
     <script src="{{ asset('build/assets/app-T1DpEqax.js') }}" defer></script>
     <style>
+
+        
         @media (max-width: 640px) {
             .mobile-nav-text {
                 font-size: 0.65rem;

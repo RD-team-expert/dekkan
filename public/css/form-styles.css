@@ -1,0 +1,101 @@
+/* تحسين أسلوب حقول النماذج */
+.form-input,
+.form-select,
+.form-textarea {
+    transition: all 0.3s ease;
+    border-width: 1px;
+    border-radius: 0.375rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+    border-color: #ef4444;
+}
+
+.form-input.error:focus,
+.form-select.error:focus,
+.form-textarea.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.form-error {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* تحسين أزرار النماذج */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #059669;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.btn-blue {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-blue:hover {
+    background-color: #2563eb;
+}
+
+/* تحسين مظهر حقول الإدخال المعطلة */
+.form-input:disabled,
+.form-select:disabled,
+.form-textarea:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+/* تحسين مظهر حقول الإدخال للقراءة فقط */
+.form-input[readonly] {
+    background-color: #f9fafb;
+}

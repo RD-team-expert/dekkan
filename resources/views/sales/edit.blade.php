@@ -9,12 +9,12 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-4">
-            <label for="date_time" class="block text-sm font-medium text-gray-700">تاريخ ووقت المبيعة</label>
-            <input type="datetime-local" name="date_time" id="date_time" value="{{ $sale->date_time->format('Y-m-d\TH:i') }}"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('date_time') border-red-500 @enderror" required>
+        <div class="mb-4 form-group">
+            <label for="date_time" class="form-label">تاريخ ووقت المبيعة</label>
+            <input type="datetime-local" name="date_time" id="date_time" value="{{ $sale->date_time->format('Y-m-d\\TH:i') }}"
+                   class="form-input @error('date_time') error @enderror" required>
             @error('date_time')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="form-error">{{ $message }}</p>
             @enderror
         </div>
 

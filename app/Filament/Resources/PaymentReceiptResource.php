@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentReceiptResource\Pages;
 use App\Models\PaymentReceipt;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,9 +23,11 @@ class PaymentReceiptResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\Select::make('user_id')
+                    ->label('User')
+                    ->options(User::all()->pluck('name', 'id'))
                     ->required()
-                    ->numeric(),
+                    ->searchable(),
                 Forms\Components\DateTimePicker::make('date')
                     ->required(),
                 Forms\Components\Select::make('type')
@@ -46,9 +49,10 @@ class PaymentReceiptResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->dateTime()
                     ->sortable(),

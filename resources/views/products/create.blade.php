@@ -9,18 +9,18 @@
     <form action="{{ route('products.store') }}" method="POST" class="bg-white p-6 rounded shadow-md" enctype="multipart/form-data">
         @csrf
 
-        <div class="mb-4">
-            <label for="barcode" class="block text-sm font-medium text-gray-700">الباركود</label>
+        <div class="mb-4 form-group">
+            <label for="barcode" class="form-label">الباركود</label>
             <div class="flex space-x-2">
                 <input type="text" name="barcode" id="barcode" value="{{ old('barcode') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('barcode') border-red-500 @enderror"
+                       class="form-input @error('barcode') error @enderror"
                        placeholder="امسح الباركود أو أدخله يدويًا">
-                <button type="button" id="scan-barcode" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                <button type="button" id="scan-barcode" class="btn btn-blue">
                     مسح الباركود
                 </button>
             </div>
             @error('barcode')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            <p class="form-error">{{ $message }}</p>
             @enderror
         </div>
 

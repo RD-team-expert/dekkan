@@ -66,12 +66,12 @@ class PurchaseController extends Controller
             // Commit the transaction
             DB::commit();
 
-            return redirect()->route('purchases.create')->with('success', 'Purchase recorded successfully');
+            return redirect()->route('purchases.create')->with('success', 'تم تسجيل عملية الشراء بنجاح');
         } catch (\Exception $e) {
             // Roll back the transaction on error
             DB::rollBack();
 
-            return back()->withErrors(['error' => 'Failed to record purchase: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'فشل في تسجيل عملية الشراء: ' . $e->getMessage()]);
         }
     }
 
@@ -112,12 +112,12 @@ class PurchaseController extends Controller
             'selling_price' => $request->selling_price,
         ]);
 
-        return redirect()->route('purchases.show', $purchase->id)->with('success', 'Purchase updated successfully');
+        return redirect()->route('purchases.show', $purchase->id)->with('success', 'تم تحديث عملية الشراء بنجاح');
     }
 
     public function destroy(Purchase $purchase): \Illuminate\Http\RedirectResponse
     {
         $purchase->delete();
-        return redirect()->route('purchases.index')->with('success', 'Deleted successfully');
+        return redirect()->route('purchases.index')->with('success', 'تم الحذف بنجاح');
     }
 }
