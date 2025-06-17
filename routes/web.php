@@ -42,10 +42,3 @@ Route::middleware('auth')->group(function () {
 
 });
 
-// Route::resource('/payment_receipts', App\Http\Controllers\PaymentReceiptController::class);
-
-// Route::resource('/products', App\Http\Controllers\ProductController::class);
-
-// Route::resource('/purchases', App\Http\Controllers\PurchaseController::class);
-
-// Route::resource('/sales', App\Http\Controllers\SaleController::class);

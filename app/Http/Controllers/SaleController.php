@@ -52,10 +52,8 @@ class SaleController extends Controller
                 $sellingPrice = $latestPurchase ? $latestPurchase->selling_price : 0;
                 $expectedTotal = $item['quantity'] * $sellingPrice;
 
-                // Validate total_price matches the calculated value (optional strict check)
-                if (abs($item['total_price'] - $expectedTotal) > 0.01) {
-                    throw new \Exception('عدم تطابق السعر الإجمالي للمنتج رقم: ' . $item['product_id']);
-                }
+
+
 
                 // Check stock availability
                 if ($product->stock_quantity < $item['quantity']) {
@@ -68,7 +66,7 @@ class SaleController extends Controller
                     'date_time' => $request->date_time,
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
-                    'selling_price' => $sellingPrice,
+                    'selling_price' => $item['selling_price'],
                     'total_price' => $item['total_price'],
                 ]);
 
@@ -155,7 +153,7 @@ class SaleController extends Controller
         ->where('name', 'LIKE', '%' . $query . '%')
         ->limit(20)
         ->get();
-        
+
         return response()->json($products->map(function ($product) {
             return [
                 'id' => $product->id,

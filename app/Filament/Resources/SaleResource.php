@@ -16,6 +16,8 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Indicator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class SaleResource extends Resource
 {
@@ -100,20 +102,90 @@ class SaleResource extends Resource
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
-                        
+
                         if ($data['from'] ?? null) {
                             $indicators[] = Indicator::make('From ' . $data['from'])->removeField('from');
                         }
-                        
+
                         if ($data['until'] ?? null) {
                             $indicators[] = Indicator::make('Until ' . $data['until'])->removeField('until');
                         }
-                        
+
                         return $indicators;
                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('export_csv')
+                    ->label('Export CSV')
+                    ->form([
+                        Forms\Components\Select::make('date_range')
+                            ->label('Date Range')
+                            ->options([
+                                'today' => 'Today',
+                                'week' => 'This Week',
+                                'month' => 'This Month',
+                            ])
+                            ->required()
+                            ->default('today'),
+                    ])
+                    ->action(function (array $data) {
+                        $dateRange = $data['date_range'];
+                        $query = Sale::query();
+
+                        switch ($dateRange) {
+                            case 'today':
+                                $query->whereDate('date_time', Carbon::today());
+                                break;
+                            case 'week':
+                                $query->whereBetween('date_time', [
+                                    Carbon::now()->startOfWeek(),
+                                    Carbon::now()->endOfWeek(),
+                                ]);
+                                break;
+                            case 'month':
+                                $query->whereBetween('date_time', [
+                                    Carbon::now()->startOfMonth(),
+                                    Carbon::now()->endOfMonth(),
+                                ]);
+                                break;
+                        }
+
+                        $records = $query->with(['user', 'product'])->get();
+
+                        $csvData = "ID,User,Date,Product,Quantity,Total Products,Selling Price,Purchase Price,Profit,Created At,Updated At\n";
+                        foreach ($records as $record) {
+                            // Assuming Product or related Purchase model has selling_price and purchase_price
+                            // Adjust these based on your actual model relationships
+                            $sellingPrice = $record->product->selling_price ?? 0;
+                            $purchasePrice = $record->product->purchase_price ?? 0;
+                            $profit = $sellingPrice - $purchasePrice;
+
+                            $csvData .= sprintf(
+                                "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                $record->id,
+                                str_replace(',', '', $record->user?->name ?? 'N/A'),
+                                $record->date_time,
+                                str_replace(',', '', $record->product?->name ?? 'N/A'),
+                                $record->quantity,
+                                $record->total_products,
+                                $sellingPrice,
+                                $purchasePrice,
+                                $profit,
+                                $record->created_at,
+                                $record->updated_at
+                            );
+                        }
+
+                        return Response::streamDownload(function () use ($csvData) {
+                            echo $csvData;
+                        }, 'sales_' . $dateRange . '_' . now()->format('Ymd_His') . '.csv', [
+                            'Content-Type' => 'text/csv',
+                        ]);
+                    })
+                    ->icon('heroicon-o-document'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

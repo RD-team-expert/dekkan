@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class PaymentReceiptResource extends Resource
 {
@@ -74,6 +77,67 @@ class PaymentReceiptResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('export_csv')
+                    ->label('Export CSV')
+                    ->form([
+                        Forms\Components\Select::make('date_range')
+                            ->label('Date Range')
+                            ->options([
+                                'today' => 'Today',
+                                'week' => 'This Week',
+                                'month' => 'This Month',
+                            ])
+                            ->required()
+                            ->default('today'),
+                    ])
+                    ->action(function (array $data) {
+                        $dateRange = $data['date_range'];
+                        $query = PaymentReceipt::query();
+
+                        switch ($dateRange) {
+                            case 'today':
+                                $query->whereDate('date', Carbon::today());
+                                break;
+                            case 'week':
+                                $query->whereBetween('date', [
+                                    Carbon::now()->startOfWeek(),
+                                    Carbon::now()->endOfWeek(),
+                                ]);
+                                break;
+                            case 'month':
+                                $query->whereBetween('date', [
+                                    Carbon::now()->startOfMonth(),
+                                    Carbon::now()->endOfMonth(),
+                                ]);
+                                break;
+                        }
+
+                        $records = $query->with('user')->get();
+
+                        $csvData = "ID,User,Date,Type,Amount,Notes,Created At,Updated At\n";
+                        foreach ($records as $record) {
+                            $csvData .= sprintf(
+                                "%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                $record->id,
+                                str_replace(',', '', $record->user?->name ?? 'N/A'),
+                                $record->date,
+                                $record->type,
+                                $record->amount,
+                                str_replace(',', '', $record->notes ?? ''),
+                                $record->created_at,
+                                $record->updated_at
+                            );
+                        }
+
+                        return Response::streamDownload(function () use ($csvData) {
+                            echo $csvData;
+                        }, 'payment_receipts_' . $dateRange . '_' . now()->format('Ymd_His') . '.csv', [
+                            'Content-Type' => 'text/csv',
+                        ]);
+                    })
+                    ->icon('heroicon-o-document'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

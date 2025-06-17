@@ -14,6 +14,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class PurchaseResource extends Resource
 {
@@ -87,6 +89,70 @@ class PurchaseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('export_csv')
+                    ->label('Export CSV')
+                    ->form([
+                        Forms\Components\Select::make('date_range')
+                            ->label('Date Range')
+                            ->options([
+                                'today' => 'Today',
+                                'week' => 'This Week',
+                                'month' => 'This Month',
+                            ])
+                            ->required()
+                            ->default('today'),
+                    ])
+                    ->action(function (array $data) {
+                        $dateRange = $data['date_range'];
+                        $query = Purchase::query();
+
+                        switch ($dateRange) {
+                            case 'today':
+                                $query->whereDate('date', Carbon::today());
+                                break;
+                            case 'week':
+                                $query->whereBetween('date', [
+                                    Carbon::now()->startOfWeek(),
+                                    Carbon::now()->endOfWeek(),
+                                ]);
+                                break;
+                            case 'month':
+                                $query->whereBetween('date', [
+                                    Carbon::now()->startOfMonth(),
+                                    Carbon::now()->endOfMonth(),
+                                ]);
+                                break;
+                        }
+
+                        $records = $query->with(['user', 'product'])->get();
+
+                        $csvData = "ID,User,Date,Product,Quantity,Purchase Price,Selling Price,Profit,Created At,Updated At\n";
+                        foreach ($records as $record) {
+                            $profit = $record->selling_price - $record->purchase_price;
+                            $csvData .= sprintf(
+                                "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                $record->id,
+                                str_replace(',', '', $record->user?->name ?? 'N/A'),
+                                $record->date,
+                                str_replace(',', '', $record->product?->name ?? 'N/A'),
+                                $record->quantity,
+                                $record->purchase_price,
+                                $record->selling_price,
+                                $profit,
+                                $record->created_at,
+                                $record->updated_at
+                            );
+                        }
+
+                        return Response::streamDownload(function () use ($csvData) {
+                            echo $csvData;
+                        }, 'purchases_' . $dateRange . '_' . now()->format('Ymd_His') . '.csv', [
+                            'Content-Type' => 'text/csv',
+                        ]);
+                    })
+                    ->icon('heroicon-o-document'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

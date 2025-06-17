@@ -15,7 +15,7 @@
 
         <div id="products-container">
             <div class="product-item mb-4 p-4 border rounded">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div>
                         <label for="barcode_0" class="block text-sm font-medium text-gray-700">الباركود</label>
                         <div class="flex space-x-2">
@@ -29,7 +29,7 @@
                         <label for="name_0" class="block text-sm font-medium text-gray-700">البحث عن المنتج</label>
                         <div class="relative">
                             <input type="text" id="name_0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm product-search"
-                                   placeholder="ابحث عن المنتج بالاسم " data-index="0">
+                                   placeholder="ابحث عن المنتج بالاسم" data-index="0">
                             <div id="search-results_0" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-60 overflow-y-auto"></div>
                         </div>
                         <label for="product_id_0" class="block text-sm font-medium text-gray-700 mt-2">اختر المنتج</label>
@@ -51,6 +51,11 @@
                         <label for="quantity_0" class="block text-sm font-medium text-gray-700">الكمية</label>
                         <input type="number" name="products[0][quantity]" id="quantity_0" min="1" value="1"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm quantity-input" required>
+                    </div>
+                    <div>
+                        <label for="selling_price_0" class="block text-sm font-medium text-gray-700">سعر البيع</label>
+                        <input type="number" name="products[0][selling_price]" id="selling_price_0" step="0.01" min="0"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm selling-price-input" required>
                     </div>
                     <div>
                         <label for="total_price_0" class="block text-sm font-medium text-gray-700">السعر الإجمالي</label>
@@ -80,11 +85,10 @@
         <div class="flex justify-end">
             <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
                 تسجيل المبيعة
-            </button>
+                </button>
         </div>
     </form>
 @endsection
-
 
 @push('scripts')
     <!-- Include html5-qrcode library -->
@@ -109,7 +113,7 @@
                     const newItem = document.createElement('div');
                     newItem.classList.add('product-item', 'mb-4', 'p-4', 'border', 'rounded');
                     newItem.innerHTML = `
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div>
                                 <label for="barcode_${productIndex}" class="block text-sm font-medium text-gray-700">الباركود</label>
                                 <div class="flex space-x-2">
@@ -131,7 +135,7 @@
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm product-select" required>
                                     <option value="">اختر منتج</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->id }}"
+                    <option value="{{ $product->id }}"
                                                 data-selling-price="{{ $product->latestPurchase->selling_price ?? 0 }}"
                                                 data-stock-quantity="{{ $product->stock_quantity }}"
                                                 data-barcode="{{ $product->barcode }}"
@@ -139,12 +143,17 @@
                                             {{ $product->name }} (المخزن: {{ $product->stock_quantity }})
                                         </option>
                                     @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="quantity_${productIndex}" class="block text-sm font-medium text-gray-700">الكمية</label>
+                    </select>
+                </div>
+                <div>
+                    <label for="quantity_${productIndex}" class="block text-sm font-medium text-gray-700">الكمية</label>
                                 <input type="number" name="products[${productIndex}][quantity]" id="quantity_${productIndex}" min="1" value="1"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm quantity-input" required>
+                            </div>
+                            <div>
+                                <label for="selling_price_${productIndex}" class="block text-sm font-medium text-gray-700">سعر البيع</label>
+                                <input type="number" name="products[${productIndex}][selling_price]" id="selling_price_${productIndex}" step="0.01" min="0"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm selling-price-input" required>
                             </div>
                             <div>
                                 <label for="total_price_${productIndex}" class="block text-sm font-medium text-gray-700">السعر الإجمالي</label>
@@ -189,11 +198,20 @@
             function initProductRow(index) {
                 const productSelect = document.getElementById(`product_id_${index}`);
                 const quantityInput = document.getElementById(`quantity_${index}`);
+                const sellingPriceInput = document.getElementById(`selling_price_${index}`);
                 const totalPriceInput = document.getElementById(`total_price_${index}`);
                 const barcodeInput = document.getElementById(`barcode_${index}`);
                 const searchInput = document.getElementById(`name_${index}`);
                 const searchResults = document.getElementById(`search-results_${index}`);
                 const scanButton = document.querySelector(`.scan-barcode[data-index="${index}"]`);
+
+                // Function to update total price
+                function updateTotalPrice() {
+                    const sellingPrice = parseFloat(sellingPriceInput.value || 0);
+                    const quantity = parseInt(quantityInput.value || 1);
+                    totalPriceInput.value = (sellingPrice * quantity).toFixed(2);
+                    updateGrandTotal();
+                }
 
                 // Product search functionality
                 if (searchInput) {
@@ -230,6 +248,7 @@
                             if (productOption) {
                                 productSelect.value = productOption.value;
                                 searchInput.value = productOption.dataset.name;
+                                sellingPriceInput.value = parseFloat(productOption.dataset.sellingPrice || 0).toFixed(2);
                                 const changeEvent = new Event('change');
                                 productSelect.dispatchEvent(changeEvent);
                             } else {
@@ -289,6 +308,9 @@
                         const quantity = parseInt(quantityInput.value || 1);
                         const stockQuantity = parseInt(selectedOption.dataset.stockQuantity || 0);
 
+                        // Set selling price input
+                        sellingPriceInput.value = sellingPrice.toFixed(2);
+
                         // Validate quantity against stock
                         if (quantity > stockQuantity) {
                             alert(`الكمية المطلوبة (${quantity}) تتجاوز المخزون المتاح (${stockQuantity})`);
@@ -296,8 +318,7 @@
                         }
 
                         // Update total price
-                        totalPriceInput.value = (sellingPrice * parseInt(quantityInput.value)).toFixed(2);
-                        updateGrandTotal();
+                        updateTotalPrice();
 
                         // Update barcode and search input fields
                         if (barcodeInput && selectedOption.dataset.barcode) {
@@ -314,9 +335,8 @@
                     quantityInput.addEventListener('input', () => {
                         if (productSelect.value) {
                             const selectedOption = productSelect.options[productSelect.selectedIndex];
-                            const sellingPrice = parseFloat(selectedOption.dataset.sellingPrice || 0);
-                            const quantity = parseInt(quantityInput.value || 1);
                             const stockQuantity = parseInt(selectedOption.dataset.stockQuantity || 0);
+                            const quantity = parseInt(quantityInput.value || 1);
 
                             // Validate quantity against stock
                             if (quantity > stockQuantity) {
@@ -325,9 +345,15 @@
                             }
 
                             // Update total price
-                            totalPriceInput.value = (sellingPrice * parseInt(quantityInput.value)).toFixed(2);
-                            updateGrandTotal();
+                            updateTotalPrice();
                         }
+                    });
+                }
+
+                // Selling price input change handler
+                if (sellingPriceInput) {
+                    sellingPriceInput.addEventListener('input', () => {
+                        updateTotalPrice();
                     });
                 }
             }
@@ -380,6 +406,7 @@
                 const productSelect = document.getElementById(`product_id_${index}`);
                 const barcodeInput = document.getElementById(`barcode_${index}`);
                 const quantityInput = document.getElementById(`quantity_${index}`);
+                const sellingPriceInput = document.getElementById(`selling_price_${index}`);
                 const totalPriceInput = document.getElementById(`total_price_${index}`);
 
                 // Update search input
@@ -410,6 +437,9 @@
                     barcodeInput.value = product.barcode || '';
                 }
 
+                // Update selling price
+                sellingPriceInput.value = parseFloat(product.selling_price || 0).toFixed(2);
+
                 // Validate quantity against stock
                 const quantity = parseInt(quantityInput.value || 1);
                 if (quantity > product.stock_quantity) {
@@ -418,7 +448,7 @@
                 }
 
                 // Update total price
-                totalPriceInput.value = (product.selling_price * parseInt(quantityInput.value)).toFixed(2);
+                totalPriceInput.value = (parseFloat(sellingPriceInput.value) * parseInt(quantityInput.value)).toFixed(2);
                 updateGrandTotal();
             }
 
